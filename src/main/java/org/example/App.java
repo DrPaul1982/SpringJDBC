@@ -18,9 +18,12 @@ public class App {
         dataSource.setUsername(dbUser);
         dataSource.setPassword(dbPassword);
 
+
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
         CustomerDaoImpl customerDao = new CustomerDaoImpl(jdbcTemplate);
+
+        createTable(jdbcTemplate);
 
         Customer newCustomer = new Customer(0, "Patric", "patric@example.com", "444-555-222");
         customerDao.save(newCustomer);
@@ -28,4 +31,15 @@ public class App {
         Customer foundCustomer = customerDao.findById(1);
         System.out.println("Found customer: " + foundCustomer);
     }
+
+    public static void createTable(JdbcTemplate jdbcTemplate) {
+        String sql = "CREATE TABLE IF NOT EXISTS Customer (" +
+                "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                "fullName VARCHAR(255) NOT NULL, " +
+                "email VARCHAR(255) NOT NULL, " +
+                "socialSecurityNumber VARCHAR(50) NOT NULL)";
+
+        jdbcTemplate.execute(sql);
+    }
+
 }
